@@ -11,6 +11,7 @@ export default function Traveler() {
     },
   ]);
   const [input, setInput] = useState('');
+  const [itinerary, setItinerary] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,11 +27,12 @@ export default function Traveler() {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
+      setItinerary(data.output.itinerary.summary);
       setMessages(prev => [
         ...prev,
         {
           sender: 'bot',
-          text: data.output || 'Sorry, I could not understand.',
+          text: data.output.nextMessage || 'Sorry, I could not understand.',
         },
       ]);
     } catch (err) {
@@ -91,20 +93,16 @@ export default function Traveler() {
           </h3>
           <div className="mb-6">
             <h4 className="font-bold text-lochinvar">Itinerary</h4>
-            <ul className="list-disc ml-5 text-gray-700">
-              <li>City Tour - Day 1</li>
-              <li>Beach Day - Day 2</li>
-              <li>Museum Visit - Day 3</li>
-            </ul>
+            <div dangerouslySetInnerHTML={{ __html: itinerary }} />
           </div>
-          <div>
+          {/* <div>
             <h4 className="font-bold text-lochinvar">Expenses</h4>
             <ul className="list-disc ml-5 text-gray-700">
               <li>Flight: $500</li>
               <li>Hotel: $300</li>
               <li>Meals: $150</li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
