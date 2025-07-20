@@ -18,6 +18,8 @@ export default function Traveler() {
     },
   ]);
   const [input, setInput] = useState('');
+  const [itineraryHtml, setItineraryHtml] = useState<string | null>(null);
+  const [selectedItinerary, setSelectedItinerary] = useState<any>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,15 +35,33 @@ export default function Traveler() {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
-      console.log(data);
+      setSelectedItinerary(data.output);
 
-      setMessages(prev => [
-        ...prev,
-        {
-          sender: 'bot',
-          text: data.output.nextMessage || 'Sorry, I could not understand.',
-        },
-      ]);
+      // Extract itinerary
+      if (data.output?.itinerary?.summary) {
+        setItineraryHtml(data.output.itinerary.summary);
+      }
+
+      // Show next message
+      if (data.output?.nextMessage || data.output?.itinerary) {
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text:
+              data.output.nextMessage ||
+              'I generated your itinerary. Let me know what to do next.',
+          },
+        ]);
+      } else {
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: data.nextMessage || 'Sorry, I could not understand.',
+          },
+        ]);
+      }
     } catch (err) {
       setMessages(prev => [
         ...prev,
@@ -52,11 +72,10 @@ export default function Traveler() {
 
   const handleSaveItinerary = async () => {
     try {
-      const itinerary = messages.map(m => ({ role: m.sender, text: m.text }));
       const res = await fetch(`${BACKEND_API}/users/${email}/itinerary`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itinerary }),
+        body: JSON.stringify(selectedItinerary),
       });
       if (res.ok) setShowModal(true);
       else alert('Failed to save.');
@@ -83,7 +102,7 @@ export default function Traveler() {
         End Session
       </button>
 
-      <div className="w-[90%] h-[90vh] flex rounded-xl shadow-xl bg-white/70 backdrop-blur-md overflow-hidden">
+      <div className="w-[90%] h-[80vh] flex rounded-xl shadow-xl bg-white/70 backdrop-blur-md overflow-hidden">
         {/* Chat Section */}
         <div className="w-2/3 flex flex-col p-6 border-r border-gray-300">
           <h2 className="text-2xl font-bold text-rhino mb-4">
@@ -121,35 +140,29 @@ export default function Traveler() {
           </form>
         </div>
 
-        {/* Itinerary & Expenses Panel */}
-        <div className="w-1/3 p-6 bg-white/60 backdrop-blur-md flex flex-col justify-between">
+        {/* Itinerary Panel */}
+        <div className="w-1/3 p-6 bg-white/60 backdrop-blur-md flex flex-col justify-between overflow-y-auto">
           <div>
             <h3 className="text-xl font-semibold text-rhino mb-4">
-              Trip Overview
+              Itinerary Preview
             </h3>
-            <div className="mb-6">
-              <h4 className="font-bold text-lochinvar">Itinerary</h4>
-              <ul className="list-disc ml-5 text-gray-700">
-                <li>City Tour - Day 1</li>
-                <li>Beach Day - Day 2</li>
-                <li>Museum Visit - Day 3</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-lochinvar">Expenses</h4>
-              <ul className="list-disc ml-5 text-gray-700">
-                <li>Flight: $500</li>
-                <li>Hotel: $300</li>
-                <li>Meals: $150</li>
-              </ul>
-            </div>
+            {itineraryHtml ? (
+              <div
+                className="text-gray-800 prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: itineraryHtml }}
+              />
+            ) : (
+              <p className="text-gray-500 italic">No itinerary yet.</p>
+            )}
           </div>
-          <button
-            onClick={handleSaveItinerary}
-            className="mt-4 bg-marigold text-black font-semibold py-2 rounded hover:bg-yellow-400 transition"
-          >
-            Save Itinerary
-          </button>
+          {itineraryHtml ? (
+            <button
+              onClick={handleSaveItinerary}
+              className="mt-4 bg-marigold text-black font-semibold py-2 rounded hover:bg-yellow-400 transition"
+            >
+              Save Itinerary
+            </button>
+          ) : null}
         </div>
       </div>
       <SimpleModal open={showModal} onClose={() => setShowModal(false)} />

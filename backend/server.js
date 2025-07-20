@@ -24,17 +24,6 @@ app.post('/login', (req, res) => {
   );
 });
 
-// Get user by email
-app.get('/users/:email', (req, res) => {
-  const email = req.params.email;
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(404).json({ error: 'User not found' });
-    row.itinerary = JSON.parse(row.itinerary || '[]');
-    res.json(row);
-  });
-});
-
 // Update itinerary
 app.put('/users/:email/itinerary', (req, res) => {
   const email = req.params.email;
@@ -42,6 +31,32 @@ app.put('/users/:email/itinerary', (req, res) => {
   db.run(
     'UPDATE users SET itinerary = ? WHERE email = ?',
     [itinerary, email],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      res.json({ success: true });
+    },
+  );
+});
+
+app.get('/users', (req, res) => {
+  db.all(
+    'SELECT name, email, role, itinerary, status FROM users WHERE role = "traveler"',
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    },
+  );
+});
+
+app.put('/users/:email/approve', (req, res) => {
+  const email = req.params.email;
+  db.run(
+    'UPDATE users SET status = "approved" WHERE email = ?',
+    [email],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true });
