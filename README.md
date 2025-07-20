@@ -30,7 +30,7 @@ The goal of this app is to streamline business travel planning by:
 
 ### 🔹 Traveler
 
-- Login
+- Login as employee
 - Ask one consolidated question (e.g. trip purpose, destination, number of travelers)
 - Submit that input to an n8n webhook
 - View the AI-generated itinerary summary
@@ -128,10 +128,20 @@ The chatbot uses an **n8n webhook** to process user input via an OpenAI-based ag
 | -------------- | ---------------------------- | -------- | ----------- |
 | David Ruano    | david.ruano@algoworks.com    | traveler | traveler123 |
 | Andres Yajamin | andres.yajamin@algoworks.com | traveler | traveler123 |
+| Emily Johnson  | emily.johnson@algoworks.com  | traveler | traveler123 |
+| John Smith     | john.smith@algoworks.com     | traveler | traveler123 |
 | Nisha Gharpure | nisha.gharpure@algoworks.com | manager  | manager123  |
 | Adam Carter    | adam.carter@algoworks.com    | manager  | manager123  |
 
 > You can modify or expand these in `db.js`.
+
+---
+
+## 🧠 AI Workflow (n8n)
+
+Below is a visual representation of the AI workflow in [n8n](https://n8n.io), which handles the trip planning logic.
+
+## ![n8n Workflow](./assets/n8n_workflow.png)
 
 ---
 
@@ -147,3 +157,16 @@ The chatbot uses an **n8n webhook** to process user input via an OpenAI-based ag
 ## 📬 Questions or Feedback?
 
 Feel free to reach out or fork and contribute. Happy traveling!
+
+---
+
+## 👥 Creators
+
+This project was created by the following team members (also available as default users in the app):
+
+| Name           | Email                        |
+| -------------- | ---------------------------- |
+| David Ruano    | david.ruano@algoworks.com    |
+| Andres Yajamin | andres.yajamin@algoworks.com |
+| Nisha Gharpure | nisha.gharpure@algoworks.com |
+| Adam Carter    | adam.carter@algoworks.com    |
