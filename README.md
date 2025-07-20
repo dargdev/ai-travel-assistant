@@ -162,6 +162,8 @@ Feel free to reach out or fork and contribute. Happy traveling!
 
 ---
 
+
+
 ## 👥 Creators
 
 This project was created by the following team members (also available as default users in the app):
@@ -172,3 +174,8 @@ This project was created by the following team members (also available as defaul
 | Andres Yajamin | andres.yajamin@algoworks.com |
 | Nisha Gharpure | nisha.gharpure@algoworks.com |
 | Adam Carter    | adam.carter@algoworks.com    |
+
+
+## Video
+
+https://algoworks-my.sharepoint.com/:v:/p/andres_yajamin/ERRfWw4RXZFLiYWbbgEkJCYBn-NJj02mvUfG-gzDI90IHw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=n380j3
