@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const N8N_WEBHOOK_URL =
-  'https://n8n.narvaez.dev/webhook/87bc075e-b23f-4f5c-aa81-8c164916f361';
+const N8N_WEBHOOK_URL = 'https://n8n.narvaez.dev/webhook/ai-travel-agent';
 function App() {
   const [messages, setMessages] = useState([
     {
@@ -30,7 +29,7 @@ function App() {
       const data = await res.json();
       setMessages(prev => [
         ...prev,
-        { sender: 'bot', text: data.message || "I didn't get that." },
+        { sender: 'bot', text: data.output || "I didn't get that." },
       ]);
       console.log('Response from n8n:', data);
     } catch (err) {
