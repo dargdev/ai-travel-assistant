@@ -27,7 +27,7 @@ app.post('/login', (req, res) => {
 // Update itinerary
 app.put('/users/:email/itinerary', (req, res) => {
   const email = req.params.email;
-  const itinerary = JSON.stringify(req.body.itinerary || []);
+  const itinerary = JSON.stringify(req.body || []);
   db.run(
     'UPDATE users SET itinerary = ? WHERE email = ?',
     [itinerary, email],

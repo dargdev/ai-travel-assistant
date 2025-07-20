@@ -79,6 +79,8 @@ export default function Manager() {
             {travelers.map((traveler, index) => {
               const hasItinerary = !!traveler.itinerary;
               const isApproved = traveler.status === 'approved';
+              console.log('traveler', traveler);
+
               return (
                 <div
                   key={index}
@@ -114,12 +116,58 @@ export default function Manager() {
 
                   <div>
                     {hasItinerary ? (
-                      <div
-                        className="prose max-w-none text-gray-800"
-                        dangerouslySetInnerHTML={{
-                          __html: JSON.parse(traveler.itinerary).summary,
-                        }}
-                      />
+                      (() => {
+                        let parsed;
+                        try {
+                          parsed = JSON.parse(traveler.itinerary);
+                        } catch {
+                          return (
+                            <p className="text-red-500">
+                              Invalid itinerary format.
+                            </p>
+                          );
+                        }
+
+                        const title = parsed?.itinerary?.title;
+                        const expenses = parsed?.expenses || [];
+
+                        return (
+                          <>
+                            {/* Itinerary Summary */}
+                            {title && (
+                              <div className="prose max-w-none text-gray-800 mb-4">
+                                {title}
+                              </div>
+                            )}
+
+                            {/* Expenses Section */}
+                            {expenses.length > 0 ? (
+                              <div className="mt-4">
+                                <h4 className="text-lg font-bold text-rhino mb-2">
+                                  Expenses
+                                </h4>
+                                <ul className="text-gray-800 list-disc ml-6">
+                                  {expenses.map((exp: any, idx: number) => (
+                                    <li key={idx} className="mb-1">
+                                      <span className="font-medium">
+                                        {exp.description}
+                                      </span>{' '}
+                                      — <span>{exp.cost}</span>{' '}
+                                      <span className="text-sm text-gray-500">
+                                        ({exp.date_from} → {exp.date_to})
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : (
+                              <p className="text-gray-500 italic">
+                                No expenses listed.
+                              </p>
+                            )}
+                          </>
+                        );
+                      })()
                     ) : (
                       <p className="text-gray-500 italic">
                         No itinerary submitted yet.

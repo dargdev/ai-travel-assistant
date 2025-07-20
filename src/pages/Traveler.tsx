@@ -32,7 +32,7 @@ export default function Traveler() {
       const res = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, sessionId: email }),
       });
       const data = await res.json();
       setSelectedItinerary(data.output);
