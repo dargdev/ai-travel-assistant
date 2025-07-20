@@ -7,6 +7,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Login endpoint
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  db.get(
+    'SELECT * FROM users WHERE email = ? AND password = ?',
+    [email, password],
+    (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!row)
+        return res.status(401).json({ error: 'Invalid email or password' });
+
+      row.itinerary = JSON.parse(row.itinerary || '[]');
+      res.json({ name: row.name, email: row.email, role: row.role });
+    },
+  );
+});
+
 // Get user by email
 app.get('/users/:email', (req, res) => {
   const email = req.params.email;

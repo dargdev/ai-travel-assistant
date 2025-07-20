@@ -1,9 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import bg from '../assets/login-bg.png';
+import { SimpleModal } from '../components/SuccessModal';
 
 const N8N_WEBHOOK_URL = 'https://n8n.narvaez.dev/webhook/ai-travel-agent';
+const BACKEND_API = 'http://localhost:4000';
 
 export default function Traveler() {
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const email = user.email || '';
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
@@ -26,11 +33,13 @@ export default function Traveler() {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
+      console.log(data);
+
       setMessages(prev => [
         ...prev,
         {
           sender: 'bot',
-          text: data.output || 'Sorry, I could not understand.',
+          text: data.output.nextMessage || 'Sorry, I could not understand.',
         },
       ]);
     } catch (err) {
@@ -41,11 +50,39 @@ export default function Traveler() {
     }
   };
 
+  const handleSaveItinerary = async () => {
+    try {
+      const itinerary = messages.map(m => ({ role: m.sender, text: m.text }));
+      const res = await fetch(`${BACKEND_API}/users/${email}/itinerary`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itinerary }),
+      });
+      if (res.ok) setShowModal(true);
+      else alert('Failed to save.');
+    } catch {
+      alert('Server error.');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
+
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      className="min-h-screen bg-cover bg-center flex items-center justify-center relative"
       style={{ backgroundImage: `url(${bg})` }}
     >
+      {/* Logout button */}
+      <button
+        onClick={handleLogout}
+        className="absolute top-6 right-6 bg-rhino text-white px-4 py-2 rounded hover:bg-gray-800"
+      >
+        End Session
+      </button>
+
       <div className="w-[90%] h-[90vh] flex rounded-xl shadow-xl bg-white/70 backdrop-blur-md overflow-hidden">
         {/* Chat Section */}
         <div className="w-2/3 flex flex-col p-6 border-r border-gray-300">
@@ -85,28 +122,37 @@ export default function Traveler() {
         </div>
 
         {/* Itinerary & Expenses Panel */}
-        <div className="w-1/3 p-6 bg-white/60 backdrop-blur-md">
-          <h3 className="text-xl font-semibold text-rhino mb-4">
-            Trip Overview
-          </h3>
-          <div className="mb-6">
-            <h4 className="font-bold text-lochinvar">Itinerary</h4>
-            <ul className="list-disc ml-5 text-gray-700">
-              <li>City Tour - Day 1</li>
-              <li>Beach Day - Day 2</li>
-              <li>Museum Visit - Day 3</li>
-            </ul>
-          </div>
+        <div className="w-1/3 p-6 bg-white/60 backdrop-blur-md flex flex-col justify-between">
           <div>
-            <h4 className="font-bold text-lochinvar">Expenses</h4>
-            <ul className="list-disc ml-5 text-gray-700">
-              <li>Flight: $500</li>
-              <li>Hotel: $300</li>
-              <li>Meals: $150</li>
-            </ul>
+            <h3 className="text-xl font-semibold text-rhino mb-4">
+              Trip Overview
+            </h3>
+            <div className="mb-6">
+              <h4 className="font-bold text-lochinvar">Itinerary</h4>
+              <ul className="list-disc ml-5 text-gray-700">
+                <li>City Tour - Day 1</li>
+                <li>Beach Day - Day 2</li>
+                <li>Museum Visit - Day 3</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-lochinvar">Expenses</h4>
+              <ul className="list-disc ml-5 text-gray-700">
+                <li>Flight: $500</li>
+                <li>Hotel: $300</li>
+                <li>Meals: $150</li>
+              </ul>
+            </div>
           </div>
+          <button
+            onClick={handleSaveItinerary}
+            className="mt-4 bg-marigold text-black font-semibold py-2 rounded hover:bg-yellow-400 transition"
+          >
+            Save Itinerary
+          </button>
         </div>
       </div>
+      <SimpleModal open={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }
