@@ -6,6 +6,8 @@ This is a full-stack web application that helps employees plan trips and allows 
 
 ## 🎯 Purpose
 
+## ![Presentation PDF](./assets/AITravelAssistant.pdf)
+
 The goal of this app is to streamline business travel planning by:
 
 - Allowing **employees (travelers)** to generate travel itineraries via an AI chatbot.
