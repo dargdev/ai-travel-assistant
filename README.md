@@ -91,6 +91,14 @@ The app should now be running at `http://localhost:3000`.
 
 ---
 
+## 🧠 AI Workflow (n8n)
+
+Below is a visual representation of the AI workflow in [n8n](https://n8n.io), which handles the trip planning logic.
+
+## ![n8n Workflow](./assets/n8n_workflow.png)
+
+---
+
 ## 🔁 n8n Webhook Integration
 
 The chatbot uses an **n8n webhook** to process user input via an OpenAI-based agent. The webhook should:
@@ -134,14 +142,6 @@ The chatbot uses an **n8n webhook** to process user input via an OpenAI-based ag
 | Adam Carter    | adam.carter@algoworks.com    | manager  | manager123  |
 
 > You can modify or expand these in `db.js`.
-
----
-
-## 🧠 AI Workflow (n8n)
-
-Below is a visual representation of the AI workflow in [n8n](https://n8n.io), which handles the trip planning logic.
-
-## ![n8n Workflow](./assets/n8n_workflow.png)
 
 ---
 
